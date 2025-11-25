@@ -1,0 +1,80 @@
+        // !!! CONFIGURE SEU NÚMERO AQUI (DDD + NÚMERO) !!!
+        const MERCHANT_PHONE = "5511999999999"; 
+
+        let cart = [];
+        let total = 0;
+
+        function filterMenu(category) {
+            // Atualiza botões
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
+            });
+
+            // Mostra/Esconde produtos
+            const allProducts = document.querySelectorAll('.product-card');
+            allProducts.forEach(product => {
+                if (product.classList.contains(`category-${category}`)) {
+                    product.classList.remove('hidden');
+                } else {
+                    product.classList.add('hidden');
+                }
+            });
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            total += price;
+            if (navigator.vibrate) navigator.vibrate(50);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartBar = document.getElementById('cart-bar');
+            document.getElementById('cart-count').innerText = `${cart.length} itens`;
+            document.getElementById('cart-total').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            if (cart.length > 0) cartBar.classList.add('visible');
+        }
+
+        function openModal() {
+            if (cart.length === 0) return;
+            document.getElementById('checkout-modal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('checkout-modal').classList.remove('open');
+        }
+
+        // Fechar ao clicar fora
+        document.getElementById('checkout-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('checkout-modal')) closeModal();
+        });
+
+        function sendOrder() {
+            const name = document.getElementById('client-name').value;
+            const address = document.getElementById('client-address').value;
+            const payment = document.getElementById('payment-method').value;
+
+            if (name.trim() === "" || address.trim() === "") {
+                alert("Por favor, preencha nome e endereço!");
+                return;
+            }
+
+            let message = `*NOVO PEDIDO APP*\n\n`;
+            message += `👤 *Cliente:* ${name}\n`;
+            message += `📍 *Local:* ${address}\n`;
+            message += `💳 *Pagamento:* ${payment}\n\n`;
+            message += `*📝 ITENS:*\n`;
+
+            cart.forEach(item => {
+                message += `• ${item.name}\n`;
+            });
+
+            const formattedTotal = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            message += `\n💰 *TOTAL: ${formattedTotal}*`;
+
+            const whatsappUrl = `https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }

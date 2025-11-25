@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Restaurante & Marmitaria KatiusiA</title>
+  </head>
+  <body>
+    <header>
+      <h1>
+        <span style="font-size: 100px">&#127869;</span> Restaurante & Marmitaria
+        <span>KatiusiA</span>
+      </h1>
+      <p>Faça seu pedido online</p>
+    </header>
+
+    <div class="tabs-container">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="filterMenu('comidas')">
+          <span style="font-size: 20px">&#127869;</span> Comidas
+        </button>
+        <button class="tab-btn" onclick="filterMenu('bebidas')">
+          🥤 Bebidas
+        </button>
+      </div>
+    </div>
+
+    <div class="menu-container" id="menu">
+      <div class="product-card category-comidas">
+        <img
+          src="https://images.pexels.com/photos/8948980/pexels-photo-8948980.jpeg"
+          alt="frango"
+          class="product-img"
+        />
+        <div class="product-info">
+          <h3 class="product-title">Frango ao molho</h3>
+          <p class="product-desc">
+            Generosa porção de frango ao molho, servido com arroz branco
+            soltinho, feijão carioca temperado e farofa crocante da casa..
+          </p>
+          <div class="price-row">
+            <span class="price">R$ 15,00</span>
+            <button
+              class="add-btn"
+              onclick="addToCart('Frango ao molho', 15.00)"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card category-comidas">
+        <img
+          src="https://images.pexels.com/photos/262973/pexels-photo-262973.jpeg"
+          alt="Milanesa de frango"
+          class="product-img"
+        />
+        <div class="product-info">
+          <h3 class="product-title">Milanesa de frango</h3>
+          <p class="product-desc">
+            Tiras de frango empanadas e fritas na hora. Super crocantes, ideais
+            para petiscar..
+          </p>
+          <div class="price-row">
+            <span class="price">R$ 18,00</span>
+            <button
+              class="add-btn"
+              onclick="addToCart('Milanesa de frango', 18.00)"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card category-comidas">
+        <img
+          src="https://plus.unsplash.com/premium_photo-1695658519271-56e79516e030?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Bisteca de boi"
+          class="product-img"
+        />
+        <div class="product-info">
+          <h3 class="product-title">Bisteca de boi</h3>
+          <p class="product-desc">
+            Corte selecionado, temperado com alho fresco e sal, frito até ficar
+            douradinho por fora e macio por dentro. Sabor de comida feita na
+            hora.
+          </p>
+          <div class="price-row">
+            <span class="price">R$ 18,00</span>
+            <button
+              class="add-btn"
+              onclick="addToCart('Milanesa de frango', 18.00)"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card category-comidas">
+        <img
+          src="https://images.pexels.com/photos/34831917/pexels-photo-34831917.jpeg"
+          alt="Bife acebolado"
+          class="product-img"
+        />
+        <div class="product-info">
+          <h3 class="product-title">Bife acebolado</h3>
+          <p class="product-desc">
+            Aquele almoço que todo mundo ama. Bife acebolado feito na hora,
+            servido com arroz soltinho, feijão caseiro, farofa e salada.
+          </p>
+          <div class="price-row">
+            <span class="price">R$ 20,00</span>
+            <button
+              class="add-btn"
+              onclick="addToCart('Bife acebolado', 20.00)"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card category-bebidas hidden">
+        <img
+          src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600"
+          alt="Coca-Cola"
+          class="product-img"
+        />
+        <div class="product-info">
+          <h3 class="product-title">Coca-Cola Lata</h3>
+          <p class="product-desc">350ml bem gelada.</p>
+          <div class="price-row">
+            <span class="price">R$ 6,00</span>
+            <button class="add-btn" onclick="addToCart('Coca-Cola Lata', 6.00)">
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card category-bebidas hidden">
+        <img
+          src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600"
+          alt="Milkshake"
+          class="product-img"
+        />
+        <div class="product-info">
+          <h3 class="product-title">Milkshake Morango</h3>
+          <p class="product-desc">Creme, morango e calda especial.</p>
+          <div class="price-row">
+            <span class="price">R$ 22,00</span>
+            <button
+              class="add-btn"
+              onclick="addToCart('Milkshake Morango', 22.00)"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-bar" id="cart-bar">
+      <div class="cart-info">
+        <span class="cart-count" id="cart-count">0 itens adicionados</span>
+        <span class="cart-total" id="cart-total">R$ 0,00</span>
+      </div>
+      <button class="finish-btn" onclick="openModal()">Ver Sacola</button>
+    </div>
+
+    <div class="modal-overlay" id="checkout-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Finalizar Pedido</h2>
+          <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+
+        <div class="form-group">
+          <label>Seu Nome</label>
+          <input
+            type="text"
+            id="client-name"
+            placeholder="Digite seu nome..."
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Endereço / Observações</label>
+          <textarea
+            id="client-address"
+            rows="3"
+            placeholder="Rua, Número, Bairro..."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Pagamento</label>
+          <select id="payment-method">
+            <option value="Pix">Pix</option>
+            <option value="Cartão de Crédito">Cartão de Crédito</option>
+            <option value="Cartão de Débito">Cartão de Débito</option>
+            <option value="Dinheiro">Dinheiro</option>
+          </select>
+        </div>
+
+        <button class="btn-confirm" onclick="sendOrder()">
+          Enviar Pedido no WhatsApp
+        </button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

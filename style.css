@@ -1,0 +1,354 @@
+      :root {
+        --primary-color: #ff4757; /* Vermelho vibrante */
+        --bg-color: #f1f2f6;
+        --text-color: #2f3542;
+        --card-bg: #ffffff;
+        --green-whatsapp: #2ed573;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --color-yellow: rgba(252, 252, 3, 0.925);
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: var(--bg-color);
+        background-image: url('bg.png');
+        background-size: 100% 100%;
+        background-position: center;
+        backdrop-filter: blur(5px);
+        margin: 0;
+        padding: 0;
+        color: var(--text-color);
+        padding-bottom: 100px;
+      }
+
+      /* --- Header --- */
+      header {
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        color: white;
+        padding: 25px 20px;
+        text-align: center;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+                       & p{
+                color: rgb(252, 252, 3);
+            }
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.3rem;
+        font-weight: 700;
+         & span{
+            color: rgb(252, 252, 3);
+
+
+         }
+      }
+      header p {
+        margin: 5px 0 0;
+        opacity: 0.95;
+        font-size: 0.9rem;
+      }
+
+      /* --- Abas de Navegação --- */
+      .tabs-container {
+        position: sticky;
+        top: 0;
+        background: var(--bg-color);
+        z-index: 10;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .tabs {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        padding: 0 15px;
+      }
+
+      .tab-btn {
+        padding: 10px 30px; /* Botões mais largos já que são poucos */
+        border: none;
+        background-color: white;
+        color: var(--text-color);
+        cursor: pointer;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: 0.3s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .tab-btn.active {
+        background-color: var(--color-yellow);
+        color: rgb(26, 25, 25);
+        box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
+      }
+
+      /* --- Grid do Menu --- */
+      .menu-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      @media (max-width: 400px) {
+        .menu-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* --- Cartão do Produto --- */
+      .product-card {
+                background-color: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s;
+      }
+
+      .product-card:hover {
+        transform: translateY(-3px);
+      }
+
+      .product-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+      }
+
+      .product-info {
+        padding: 18px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-title {
+        font-size: 1.15rem;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+        font-weight: 700;
+        color: rgba(252, 252, 3, 0.925);
+      }
+
+      .product-desc {
+        font-size: 0.9rem;
+        color: var(--text-color);
+        margin-bottom: 20px;
+        line-height: 1.4;
+      }
+
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+
+      .price {
+        font-size: 1.25rem;
+        color: var(--primary-color);
+        font-weight: 800;
+      }
+
+      .add-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+      }
+      .add-btn:active {
+        background-color: #e04050;
+        transform: scale(0.98);
+      }
+
+      /* --- Carrinho Flutuante --- */
+      .cart-bar {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(150%);
+        width: 90%;
+        max-width: 600px;
+        background-color: var(--text-color);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 50px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 100;
+      }
+
+      .cart-bar.visible {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .cart-info {
+        display: flex;
+        flex-direction: column;
+      }
+      .cart-count {
+        font-size: 0.8rem;
+        color: #a4b0be;
+      }
+      .cart-total {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .finish-btn {
+        background-color: var(--green-whatsapp);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      /* --- MODAL RESPONSIVO --- */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        display: none;
+        justify-content: center;
+        align-items: flex-end;
+        z-index: 200;
+      }
+
+      @media (min-width: 768px) {
+        .modal-overlay {
+          align-items: center;
+        }
+      }
+
+      .modal-overlay.open {
+        display: flex;
+        animation: fadeIn 0.3s;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 25px;
+        width: 100%;
+        max-width: 500px;
+        border-top-left-radius: 25px;
+        border-top-right-radius: 25px;
+        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.2);
+        animation: slideUp 0.3s;
+      }
+
+      @media (min-width: 768px) {
+        .modal-content {
+          border-radius: 20px;
+          width: 90%;
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--text-color);
+      }
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #999;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #57606f;
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #dfe4ea;
+        border-radius: 10px;
+        font-size: 1rem;
+        outline: none;
+        font-family: inherit;
+      }
+
+      .btn-confirm {
+        background: var(--green-whatsapp);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 12px;
+        width: 100%;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
