@@ -1,18 +1,16 @@
-        // !!! CONFIGURE SEU NÚMERO AQUI (DDD + NÚMERO) !!!
-        const MERCHANT_PHONE = "5568999281512"; 
+// !!! CONFIGURE SEU NÚMERO AQUI (DDD + NÚMERO) !!!
+        const MERCHANT_PHONE = "556899281512"; 
 
         let cart = [];
         let total = 0;
 
         function filterMenu(category) {
-            // Atualiza botões
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
             });
 
-            // Mostra/Esconde produtos
             const allProducts = document.querySelectorAll('.product-card');
             allProducts.forEach(product => {
                 if (product.classList.contains(`category-${category}`)) {
@@ -35,7 +33,11 @@
             document.getElementById('cart-count').innerText = `${cart.length} itens`;
             document.getElementById('cart-total').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             
-            if (cart.length > 0) cartBar.classList.add('visible');
+            if (cart.length > 0) {
+                cartBar.classList.add('visible');
+            } else {
+                cartBar.classList.remove('visible');
+            }
         }
 
         function openModal() {
@@ -47,7 +49,6 @@
             document.getElementById('checkout-modal').classList.remove('open');
         }
 
-        // Fechar ao clicar fora
         document.getElementById('checkout-modal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('checkout-modal')) closeModal();
         });
@@ -76,5 +77,15 @@
             message += `\n💰 *TOTAL: ${formattedTotal}*`;
 
             const whatsappUrl = `https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`;
+            
+            // 1. Abre o WhatsApp
             window.open(whatsappUrl, '_blank');
+
+            // 2. Limpa o carrinho e fecha o modal (Melhoria de UX)
+            cart = [];
+            total = 0;
+            updateCartUI();
+            closeModal();
+            document.getElementById('client-name').value = "";
+            document.getElementById('client-address').value = "";
         }
