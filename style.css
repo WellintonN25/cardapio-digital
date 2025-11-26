@@ -8,6 +8,25 @@
         --color-yellow: rgba(252, 252, 3, 0.925);
       }
 
+      html {
+    scroll-behavior: smooth; /* Faz a rolagem ser deslizante ao clicar nas abas */
+}
+
+.menu-container {
+    /* Melhora performance em listas longas (navegadores modernos) */
+    content-visibility: auto; 
+    contain-intrinsic-size: 1px 300px; /* Tamanho estimado do card */
+}
+
+.product-card {
+    /* ... mantenha o resto do seu estilo ... */
+    
+    /* TRUQUE DE PERFORMANCE: */
+    will-change: transform; /* Avisa o navegador que isso vai se mexer */
+    transform: translateZ(0); /* Força a placa de vídeo a renderizar */
+    backface-visibility: hidden;
+}
+
       * {
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
@@ -120,7 +139,7 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: var(--shadow);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         display: flex;
         flex-direction: column;
         transition: transform 0.2s;
@@ -272,6 +291,7 @@
         animation: slideUp 0.3s;
       }
 
+
       @media (min-width: 768px) {
         .modal-content {
           border-radius: 20px;
@@ -352,3 +372,38 @@
           transform: translateY(0);
         }
       }
+
+      /* Lista de itens no Carrinho (Modal) */
+.cart-items-list {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dfe4ea;
+    padding-bottom: 10px;
+    max-height: 200px; /* Cria rolagem se tiver muitos itens */
+    overflow-y: auto;
+}
+
+.cart-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.cart-item-info { font-size: 0.95rem; }
+.cart-item-price { font-weight: bold; color: var(--primary-color); }
+
+/* Botão de Excluir */
+.btn-remove-item {
+    background-color: #fff0f0;
+    color: #ff6b6b;
+    border: 1px solid #ffcccc;
+    border-radius: 5px;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-left: 10px;
+    transition: 0.2s;
+}
+
+.btn-remove-item:hover { background-color: #ffcccc; }

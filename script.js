@@ -42,6 +42,7 @@
 
         function openModal() {
             if (cart.length === 0) return;
+            renderCartItems();
             document.getElementById('checkout-modal').classList.add('open');
         }
 
@@ -89,3 +90,46 @@
             document.getElementById('client-name').value = "";
             document.getElementById('client-address').value = "";
         }
+
+        // Função para desenhar a lista visual no modal
+function renderCartItems() {
+    const container = document.getElementById('cart-items-list');
+    container.innerHTML = ''; // Limpa a lista anterior
+
+    cart.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.classList.add('cart-item-row');
+        
+        // Formata o preço (R$)
+        const priceFormatted = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        row.innerHTML = `
+            <div class="cart-item-info">
+                <strong>${item.name}</strong> <br>
+                <span class="cart-item-price">${priceFormatted}</span>
+            </div>
+            <button class="btn-remove-item" onclick="removeItem(${index})">
+                🗑️ Remover
+            </button>
+        `;
+        container.appendChild(row);
+    });
+}
+
+// Função para remover o item
+function removeItem(index) {
+    const item = cart[index];
+    
+    // Subtrai o valor e remove do array
+    total -= item.price;
+    cart.splice(index, 1);
+    
+    // Atualiza tudo
+    updateCartUI(); // Atualiza barra inferior
+    
+    if (cart.length === 0) {
+        closeModal(); // Se zerou, fecha o modal
+    } else {
+        renderCartItems(); // Se ainda tem itens, redesenha a lista
+    }
+}
