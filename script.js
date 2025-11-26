@@ -97,20 +97,20 @@
         }
 
         // 7. Abrir/Fechar Modal
-        function openModal() {
-            if (cart.length === 0) return;
-            renderCartItems();
-            
-            const modal = document.getElementById('checkout-modal');
-            if(modal) modal.classList.add('open');
-            
-            // Esconde a barra ao abrir o modal
-            const cartBar = document.getElementById('cart-bar');
-            if(cartBar) cartBar.classList.remove('visible');
+      function openModal() {
+    if (cart.length === 0) return;
+    renderCartItems();
+    
+    const modal = document.getElementById('checkout-modal');
+    if(modal) modal.classList.add('open');
+    
+    const cartBar = document.getElementById('cart-bar');
+    if(cartBar) cartBar.classList.remove('visible');
 
-// NOVA LINHA: Atualiza o total assim que abre a janela
+    // NOVA LINHA: Atualiza o total assim que abre a janela
     updateTotalModal();
-        }
+}
+  
 
         function closeModal() {
             const modal = document.getElementById('checkout-modal');
