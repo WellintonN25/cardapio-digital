@@ -463,3 +463,24 @@ background: white;
 .cart-bar {
     z-index: 999 !important; 
 }
+
+/* Estilo das opções de entrega */
+.delivery-options {
+    display: flex;
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #dfe4ea;
+}
+
+.delivery-options label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin: 0 !important; /* Remove margem padrão */
+    color: #333 !important;
+}
+
