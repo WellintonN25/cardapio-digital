@@ -442,3 +442,15 @@ background: white;
 .btn-remove-item:active { transform: scale(0.9); background: #ffeaa7; }
 
 .btn-remove-item:hover { background-color: #ffcccc; }
+
+/* --- CORREÇÃO DE SOBREPOSIÇÃO (BUG) --- */
+
+/* 1. Força a Janela de Pedido a ficar no topo de TUDO */
+.modal-overlay {
+    z-index: 99999 !important; 
+}
+
+/* 2. Força a Barra do Carrinho a ficar abaixo da janela */
+.cart-bar {
+    z-index: 999 !important; 
+}
