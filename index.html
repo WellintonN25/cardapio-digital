@@ -314,6 +314,22 @@
           <small style="color: #2ed573; font-size: 0.8rem;">
             ✨ Seus dados ficarão salvos para o próximo pedido.
           </small>
+
+<div class="form-group">
+    <label>Tipo de Entrega</label>
+    <div class="delivery-options">
+        <label>
+            <input type="radio" name="delivery-type" value="entrega" checked onclick="updateTotalModal()"> 
+            🛵 Entrega (+ R$ 5,00)
+        </label>
+        <label>
+            <input type="radio" name="delivery-type" value="retirada" onclick="updateTotalModal()"> 
+            🥡 Retirada no Balcão (Grátis)
+        </label>
+    </div>
+</div>
+
+
         </div>
 
         <div class="form-group">
