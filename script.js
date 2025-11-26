@@ -120,65 +120,69 @@
 
         // 8. Enviar Pedido
         
- function sendOrder() {
+function sendOrder() {
+    // 1. Pega os dados dos campos
     const nameEl = document.getElementById('client-name');
     const addrEl = document.getElementById('client-address');
     const payEl = document.getElementById('payment-method');
     
-    // Pega a opção de entrega selecionada
+    // Pega a opção de entrega selecionada (Entrega ou Retirada)
     const deliveryOption = document.querySelector('input[name="delivery-type"]:checked').value;
 
     const name = nameEl ? nameEl.value : "";
     const address = addrEl ? addrEl.value : "";
     const payment = payEl ? payEl.value : "Pix";
 
+    // 2. Validação: Se for entrega, obriga a colocar endereço
     if (name.trim() === "" || (deliveryOption === 'entrega' && address.trim() === "")) {
-        alert("Por favor, preencha seus dados!");
+        alert("Por favor, preencha seus dados corretamente!");
         return;
     }
 
-    // Salvar no LocalStorage
+    // 3. Salva no navegador para a próxima vez
     try {
         localStorage.setItem('meuCardapio_nome', name);
         localStorage.setItem('meuCardapio_endereco', address);
     } catch(e) {}
 
-    // Cálculos
+    // 4. CÁLCULO DO FRETE
     let finalTotal = total;
-    let deliveryText = "";
+    let deliveryMessage = ""; // Texto extra que vai no Zap
 
     if (deliveryOption === 'entrega') {
-        finalTotal += 5.00;
-        deliveryText = "🛵 *Entrega:* Sim (+ R$ 5,00)";
+        finalTotal += 5.00; // Soma os 5 reais
+        deliveryMessage = `🛵 *Frete:* + R$ 5,00 (Incluso)\n📍 *Endereço:* ${address}`;
     } else {
-        deliveryText = "🥡 *Retirada no Balcão*";
+        deliveryMessage = `🥡 *Tipo:* Retirada no Balcão (Grátis)`;
     }
 
-    // Montando a mensagem
-    let message = `*NOVO PEDIDO*\n\n👤 *Cliente:* ${name}\n`;
-    
-    if (deliveryOption === 'entrega') {
-        message += `📍 *Endereço:* ${address}\n`;
-    } else {
-        message += `📍 *Endereço:* Retirada no Local\n`;
-    }
-    
-    message += `${deliveryText}\n`;
-    message += `💳 *Pagamento:* ${payment}\n\n*📝 ITENS:*\n`;
-    
-    cart.forEach(item => { message += `• ${item.name}\n`; });
-    
+    // 5. MONTAGEM DA MENSAGEM DO WHATSAPP
+    let message = `*NOVO PEDIDO*\n\n`;
+    message += `👤 *Cliente:* ${name}\n`;
+    message += `${deliveryMessage}\n`; // Aqui entra o aviso do frete e endereço
+    message += `💳 *Pagamento:* ${payment}\n\n`;
+    message += `*📝 ITENS:*\n`;
+
+    cart.forEach(item => {
+        message += `• ${item.name}\n`;
+    });
+
+    // Formata o valor total para Dinheiro (R$)
     const formattedTotal = finalTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    
     message += `\n💰 *TOTAL FINAL: ${formattedTotal}*`;
 
+    // 6. Envia para o WhatsApp
+    // Lembre de conferir se o MERCHANT_PHONE está configurado no topo do seu código
     window.open(`https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
-    
-    // Resetar
+
+    // 7. Limpa tudo após enviar
     cart = [];
     total = 0;
     updateCartUI();
     closeModal();
 }
+
 
 
 // Função para atualizar o total no botão quando troca a entrega
