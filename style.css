@@ -39,6 +39,7 @@
         background-image: url('bg.png');
         background-size: 100% 100%;
         background-position: center;
+        background-repeat: no-repeat;
         backdrop-filter: blur(5px);
         margin: 0;
         padding: 0;
@@ -163,7 +164,7 @@
       }
 
       .product-title {
-        font-size: 1.15rem;
+        font-size: 1.3rem;
         text-transform: uppercase;
         margin: 0 0 8px;
         font-weight: 700;
@@ -171,7 +172,7 @@
       }
 
       .product-desc {
-        font-size: 0.9rem;
+        font-size: 1.1rem;
         color: var(--text-color);
         margin-bottom: 20px;
         line-height: 1.4;
@@ -208,26 +209,27 @@
 
       /* --- Carrinho Flutuante --- */
       .cart-bar {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%) translateY(150%);
-        width: 90%;
-        max-width: 600px;
-        background-color: var(--text-color);
-        color: white;
-        padding: 15px 20px;
-        border-radius: 50px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        z-index: 100;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(130%);
+    width: 52%;
+    max-width: 300px;
+    background: rgba(40, 40, 40, 0.95); /* Fundo escuro quase preto */
+    backdrop-filter: blur(10px); /* Efeito de desfoque */
+    color: white;
+    padding: 10px 25px;
+    border-radius: 50px; /* Formato de pílula */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efeito elástico */
+    z-index: 999;
       }
 
-      .cart-bar.visible {
-        transform: translateX(-50%) translateY(0);
+     .cart-bar.visible {
+       transform: translateX(-50%) translateY(0); 
       }
 
       .cart-info {
@@ -281,22 +283,23 @@
       }
 
       .modal-content {
-        background: white;
-        padding: 25px;
-        width: 100%;
-        max-width: 500px;
-        border-top-left-radius: 25px;
-        border-top-right-radius: 25px;
-        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.2);
-        animation: slideUp 0.3s;
+       background: #fff;
+       width: 100%;
+       max-width: 500px;
+       border-radius: 25px 25px 0 0; /* Arredondado só em cima no mobile */
+       padding: 30px 25px;
+       box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+       position: relative;
+       max-height: 90vh;
+       display: flex;
+       flex-direction: column;
       }
 
 
       @media (min-width: 768px) {
-        .modal-content {
-          border-radius: 20px;
-          width: 90%;
-        }
+       .modal-content {
+         border-radius: 25px; 
+         margin: 20px; }
       }
 
       .modal-header {
@@ -305,11 +308,13 @@
         align-items: center;
         margin-bottom: 20px;
       }
+
       .modal-header h2 {
+        font-size: 1.4rem;
+        color: #222;
         margin: 0;
-        font-size: 1.5rem;
-        color: var(--text-color);
       }
+
       .close-btn {
         background: none;
         border: none;
@@ -322,35 +327,46 @@
         margin-bottom: 15px;
       }
       .form-group label {
-        display: block;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
         margin-bottom: 8px;
-        font-weight: 600;
-        color: #57606f;
       }
       .form-group input,
       .form-group select,
       .form-group textarea {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #dfe4ea;
-        border-radius: 10px;
+        background-color: #f8f9fa;
+        border: 2px solid transparent; /* Sem borda visível inicialmente */
+        border-radius: 12px;
+        padding: 14px;
         font-size: 1rem;
+        transition: 0.3s;
+        width: 100%;
+      }
+
+      .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        background-color: white;
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 15px rgba(255, 71, 87, 0.15);
         outline: none;
-        font-family: inherit;
       }
 
       .btn-confirm {
-        background: var(--green-whatsapp);
+        background: linear-gradient(135deg, #2ed573, #26af61);
         color: white;
         border: none;
-        padding: 15px;
-        border-radius: 12px;
-        width: 100%;
-        font-weight: 700;
+        padding: 18px;
+        border-radius: 15px;
         font-size: 1.1rem;
+        font-weight: bold;
+        box-shadow: 0 10px 20px rgba(46, 213, 115, 0.3);
+        margin-top: 15px;
+        letter-spacing: 0.5px;
         cursor: pointer;
-        margin-top: 10px;
       }
+
+      .btn-confirm:active { transform: scale(0.98); }
 
       .hidden {
         display: none !important;
@@ -375,35 +391,54 @@
 
       /* Lista de itens no Carrinho (Modal) */
 .cart-items-list {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #dfe4ea;
-    padding-bottom: 10px;
-    max-height: 200px; /* Cria rolagem se tiver muitos itens */
+    margin: 20px 0;
     overflow-y: auto;
+    max-height: 300px;
+    padding-right: 5px; /* Espaço para scroll */
 }
 
 .cart-item-row {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed #eee;
+    border: 1px solid #eee;
+    transition: 0.2s;
+}
+
+.cart-item-info strong {
+    display: block;
+    color: #333;
+    font-size: 1rem;
+    margin-bottom: 4px;
 }
 
 .cart-item-info { font-size: 0.95rem; }
-.cart-item-price { font-weight: bold; color: var(--primary-color); }
+.cart-item-price {
+   color: var(--primary-color);
+    font-weight: 700;
+}
 
 /* Botão de Excluir */
 .btn-remove-item {
-    background-color: #fff0f0;
-    color: #ff6b6b;
-    border: 1px solid #ffcccc;
-    border-radius: 5px;
-    padding: 5px 8px;
+background: white;
+    color: #ff4757;
+    border: 1px solid #ffeaa7;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
     cursor: pointer;
-    font-size: 0.8rem;
-    margin-left: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     transition: 0.2s;
 }
+
+.btn-remove-item:active { transform: scale(0.9); background: #ffeaa7; }
 
 .btn-remove-item:hover { background-color: #ffcccc; }

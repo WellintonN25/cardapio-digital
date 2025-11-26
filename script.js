@@ -94,22 +94,26 @@
         // Função para desenhar a lista visual no modal
 function renderCartItems() {
     const container = document.getElementById('cart-items-list');
-    container.innerHTML = ''; // Limpa a lista anterior
+    container.innerHTML = '';
+
+    if (cart.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">Seu carrinho está vazio 😢</div>';
+        return;
+    }
 
     cart.forEach((item, index) => {
         const row = document.createElement('div');
         row.classList.add('cart-item-row');
         
-        // Formata o preço (R$)
         const priceFormatted = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
         row.innerHTML = `
             <div class="cart-item-info">
-                <strong>${item.name}</strong> <br>
+                <strong>${item.name}</strong>
                 <span class="cart-item-price">${priceFormatted}</span>
             </div>
-            <button class="btn-remove-item" onclick="removeItem(${index})">
-                🗑️ Remover
+            <button class="btn-remove-item" onclick="removeItem(${index})" title="Remover item">
+                🗑️
             </button>
         `;
         container.appendChild(row);
