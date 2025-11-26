@@ -40,19 +40,31 @@
             }
         }
 
+         // --- FUNÇÕES CORRIGIDAS PARA O BUG DA BARRA FLUTUANTE ---
+
         function openModal() {
             if (cart.length === 0) return;
             renderCartItems();
             document.getElementById('checkout-modal').classList.add('open');
+
+            // CORREÇÃO AQUI: Esconde a barra flutuante quando o modal abre
+            document.getElementById('cart-bar').classList.remove('visible');
+
+            // (Opcional) Carrega dados salvos se houver
+            const savedName = localStorage.getItem('meuCardapio_nome');
+            if(savedName) console.log("Cliente recorrente: " + savedName);
         }
 
         function closeModal() {
             document.getElementById('checkout-modal').classList.remove('open');
-        }
 
-        document.getElementById('checkout-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('checkout-modal')) closeModal();
-        });
+            // CORREÇÃO AQUI: Se ainda tiver itens, mostra a barra de volta
+            if (cart.length > 0) {
+                document.getElementById('cart-bar').classList.add('visible');
+                // Ou simplesmente chame: updateCartUI(); que ele já faz essa verificação.
+            }
+        }
+       
 
         function sendOrder() {
             const name = document.getElementById('client-name').value;
