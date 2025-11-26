@@ -1,35 +1,28 @@
-
-        // !!! CONFIGURE SEU NÚMERO AQUI (DDD + NÚMERO) !!!
+  // CONFIGURAÇÃO
         const MERCHANT_PHONE = "556899281512"; 
 
+        // Variáveis Globais
         let cart = [];
         let total = 0;
 
-        // --- 1. CARREGAR DADOS (Versão Segura) ---
+        // 1. Carregar dados salvos ao iniciar
         window.addEventListener('load', () => {
             try {
-                const savedName = localStorage.getItem('cardapio_nome');
-                const savedAddress = localStorage.getItem('cardapio_endereco');
-                
-                const nameInput = document.getElementById('client-name');
-                const addressInput = document.getElementById('client-address');
-
-                if (savedName && nameInput) nameInput.value = savedName;
-                if (savedAddress && addressInput) addressInput.value = savedAddress;
-            } catch (e) {
-                console.log("Erro ao carregar dados salvos:", e);
-            }
+                const savedName = localStorage.getItem('meuCardapio_nome');
+                const savedAddress = localStorage.getItem('meuCardapio_endereco');
+                if (savedName) document.getElementById('client-name').value = savedName;
+                if (savedAddress) document.getElementById('client-address').value = savedAddress;
+            } catch (e) { console.log("Erro LocalStorage", e); }
         });
 
+        // 2. Filtro de Categorias
         function filterMenu(category) {
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
             });
 
-            const allProducts = document.querySelectorAll('.product-card');
-            allProducts.forEach(product => {
+            document.querySelectorAll('.product-card').forEach(product => {
                 if (product.classList.contains(`category-${category}`)) {
                     product.classList.remove('hidden');
                 } else {
@@ -38,156 +31,122 @@
             });
         }
 
+        // 3. Adicionar ao Carrinho
         function addToCart(name, price) {
             cart.push({ name, price });
             total += price;
-            
-            // Tenta vibrar, se não der, ignora
             try { if (navigator.vibrate) navigator.vibrate(50); } catch(e){}
-            
             updateCartUI();
         }
 
+        // 4. Atualizar Visual do Carrinho
         function updateCartUI() {
             const cartBar = document.getElementById('cart-bar');
             const countEl = document.getElementById('cart-count');
             const totalEl = document.getElementById('cart-total');
-            const modal = document.getElementById('checkout-modal');
-
-            // Atualiza textos se os elementos existirem
+            
+            // Proteção se o HTML foi alterado
             if(countEl) countEl.innerText = `${cart.length} itens`;
             if(totalEl) totalEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-            // Lógica da barra flutuante (Com proteção anti-erro)
             if (cartBar) {
-                if (cart.length > 0) {
-                    // Se o modal existe e está aberto, esconde a barra. Se não, mostra.
-                    if (modal && modal.classList.contains('open')) {
-                        cartBar.classList.remove('visible');
-                    } else {
-                        cartBar.classList.add('visible');
-                    }
+                // Mostra a barra se tiver itens E o modal estiver fechado
+                const modal = document.getElementById('checkout-modal');
+                const isModalOpen = modal && modal.classList.contains('open');
+                
+                if (cart.length > 0 && !isModalOpen) {
+                    cartBar.classList.add('visible');
                 } else {
                     cartBar.classList.remove('visible');
                 }
             }
         }
 
-        // --- FUNÇÕES DA JANELA DE PEDIDO ---
+        // 5. Remover Item
+        function removeItem(index) {
+            const item = cart[index];
+            total -= item.price;
+            cart.splice(index, 1);
+            updateCartUI();
+            if (cart.length === 0) closeModal();
+            else renderCartItems();
+        }
+
+        // 6. Renderizar Lista no Modal
+        function renderCartItems() {
+            const container = document.getElementById('cart-items-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            if (cart.length === 0) return;
+
+            cart.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.classList.add('cart-item-row');
+                const priceFormatted = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                
+                row.innerHTML = `
+                    <div class="cart-item-info">
+                        <strong>${item.name}</strong>
+                        <span class="cart-item-price">${priceFormatted}</span>
+                    </div>
+                    <button class="btn-remove-item" onclick="removeItem(${index})">🗑️</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // 7. Abrir/Fechar Modal
         function openModal() {
             if (cart.length === 0) return;
-            
             renderCartItems();
             
             const modal = document.getElementById('checkout-modal');
+            if(modal) modal.classList.add('open');
+            
+            // Esconde a barra ao abrir o modal
             const cartBar = document.getElementById('cart-bar');
-
-            if (modal) modal.classList.add('open');
-            if (cartBar) cartBar.classList.remove('visible'); // Esconde a barra
+            if(cartBar) cartBar.classList.remove('visible');
         }
 
         function closeModal() {
             const modal = document.getElementById('checkout-modal');
-            const cartBar = document.getElementById('cart-bar');
-
-            if (modal) modal.classList.remove('open');
-
-            // Se ainda tiver itens, traz a barra de volta
-            if (cart.length > 0 && cartBar) {
-                cartBar.classList.add('visible');
-            }
+            if(modal) modal.classList.remove('open');
+            updateCartUI(); // Isso traz a barra de volta automaticamente
         }
 
-        // --- ENVIAR PEDIDO ---
+        // 8. Enviar Pedido
         function sendOrder() {
-            const nameInput = document.getElementById('client-name');
-            const addressInput = document.getElementById('client-address');
-            const paymentInput = document.getElementById('payment-method');
-
-            // Proteção caso os inputs não existam
-            const name = nameInput ? nameInput.value : "Não informado";
-            const address = addressInput ? addressInput.value : "Não informado";
-            const payment = paymentInput ? paymentInput.value : "Dinheiro";
+            const nameEl = document.getElementById('client-name');
+            const addrEl = document.getElementById('client-address');
+            const payEl = document.getElementById('payment-method');
+            
+            const name = nameEl ? nameEl.value : "";
+            const address = addrEl ? addrEl.value : "";
+            const payment = payEl ? payEl.value : "Pix";
 
             if (name.trim() === "" || address.trim() === "") {
                 alert("Por favor, preencha nome e endereço!");
                 return;
             }
 
-            // Salvar dados
-            localStorage.setItem('cardapio_nome', name);
-            localStorage.setItem('cardapio_endereco', address);
+            // Salvar no LocalStorage
+            try {
+                localStorage.setItem('meuCardapio_nome', name);
+                localStorage.setItem('meuCardapio_endereco', address);
+            } catch(e) {}
 
-            let message = `*NOVO PEDIDO APP*\n\n`;
-            message += `👤 *Cliente:* ${name}\n`;
-            message += `📍 *Local:* ${address}\n`;
-            message += `💳 *Pagamento:* ${payment}\n\n`;
-            message += `*📝 ITENS:*\n`;
-
-            cart.forEach(item => {
-                message += `• ${item.name}\n`;
-            });
-
+            let message = `*NOVO PEDIDO*\n\n👤 *Cliente:* ${name}\n📍 *Local:* ${address}\n💳 *Pagamento:* ${payment}\n\n*📝 ITENS:*\n`;
+            cart.forEach(item => { message += `• ${item.name}\n`; });
+            
             const formattedTotal = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             message += `\n💰 *TOTAL: ${formattedTotal}*`;
 
-            const whatsappUrl = `https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-
-            // Limpa carrinho
+            window.open(`https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
+            
+            // Resetar
             cart = [];
             total = 0;
             updateCartUI();
             closeModal();
-        }
-
-        function renderCartItems() {
-            const container = document.getElementById('cart-items-list');
-            if (!container) return; // Se não tiver a lista no HTML, para aqui
-
-            container.innerHTML = '';
-
-            if (cart.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">Seu carrinho está vazio 😢</div>';
-                return;
-            }
-
-            cart.forEach((item, index) => {
-                const row = document.createElement('div');
-                row.classList.add('cart-item-row');
-                
-                const priceFormatted = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-                row.innerHTML = `
-                    <div class="cart-item-info">
-                        <strong>${item.name}</strong>
-                        <span class="cart-item-price">${priceFormatted}</span>
-                    </div>
-                    <button class="btn-remove-item" onclick="removeItem(${index})" title="Remover item">
-                        🗑️
-                    </button>
-                `;
-                container.appendChild(row);
-            });
-        }
-
-        function removeItem(index) {
-            const item = cart[index];
-            total -= item.price;
-            cart.splice(index, 1);
-            updateCartUI();
-            
-            if (cart.length === 0) {
-                closeModal();
-            } else {
-                renderCartItems();
-            }
-        }
-        
-        // Listener global para fechar modal ao clicar fora (com verificação)
-        const modalEl = document.getElementById('checkout-modal');
-        if (modalEl) {
-            modalEl.addEventListener('click', (e) => {
-                if (e.target === modalEl) closeModal();
-            });
         }
