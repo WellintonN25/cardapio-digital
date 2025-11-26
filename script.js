@@ -1,5 +1,5 @@
         // !!! CONFIGURE SEU NÚMERO AQUI (DDD + NÚMERO) !!!
-        const MERCHANT_PHONE = "5511999999999"; 
+        const MERCHANT_PHONE = "5568999281512"; 
 
         let cart = [];
         let total = 0;
