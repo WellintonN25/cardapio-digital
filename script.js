@@ -150,3 +150,18 @@
             updateCartUI();
             closeModal();
         }
+
+// Função para atualizar o total no botão quando troca a entrega
+function updateTotalModal() {
+    const deliveryOption = document.querySelector('input[name="delivery-type"]:checked').value;
+    let finalTotal = total;
+
+    if (deliveryOption === 'entrega') {
+        finalTotal += 5.00; // Taxa de entrega
+    }
+
+    const formattedTotal = finalTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    
+    // Atualiza o texto do botão de enviar para mostrar o valor real
+    document.querySelector('.btn-confirm').innerText = `Enviar Pedido (${formattedTotal})`;
+}
