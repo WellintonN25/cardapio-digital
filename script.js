@@ -1,20 +1,23 @@
-    <script>
+
         // !!! CONFIGURE SEU NÚMERO AQUI (DDD + NÚMERO) !!!
         const MERCHANT_PHONE = "556899281512"; 
 
         let cart = [];
         let total = 0;
 
-        // --- NOVO: CARREGAR DADOS SALVOS AO ABRIR O SITE ---
+        // --- 1. CARREGAR DADOS (Versão Segura) ---
         window.addEventListener('load', () => {
-            const savedName = localStorage.getItem('meuCardapio_nome');
-            const savedAddress = localStorage.getItem('meuCardapio_endereco');
+            try {
+                const savedName = localStorage.getItem('cardapio_nome');
+                const savedAddress = localStorage.getItem('cardapio_endereco');
+                
+                const nameInput = document.getElementById('client-name');
+                const addressInput = document.getElementById('client-address');
 
-            if (savedName) {
-                document.getElementById('client-name').value = savedName;
-            }
-            if (savedAddress) {
-                document.getElementById('client-address').value = savedAddress;
+                if (savedName && nameInput) nameInput.value = savedName;
+                if (savedAddress && addressInput) addressInput.value = savedAddress;
+            } catch (e) {
+                console.log("Erro ao carregar dados salvos:", e);
             }
         });
 
@@ -38,63 +41,82 @@
         function addToCart(name, price) {
             cart.push({ name, price });
             total += price;
-            if (navigator.vibrate) navigator.vibrate(50);
+            
+            // Tenta vibrar, se não der, ignora
+            try { if (navigator.vibrate) navigator.vibrate(50); } catch(e){}
+            
             updateCartUI();
         }
 
         function updateCartUI() {
             const cartBar = document.getElementById('cart-bar');
-            document.getElementById('cart-count').innerText = `${cart.length} itens`;
-            document.getElementById('cart-total').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const countEl = document.getElementById('cart-count');
+            const totalEl = document.getElementById('cart-total');
+            const modal = document.getElementById('checkout-modal');
 
-            // Lógica da barra flutuante
-            if (cart.length > 0) {
-                // Só mostra se o modal NÃO estiver aberto
-                if (!document.getElementById('checkout-modal').classList.contains('open')) {
-                    cartBar.classList.add('visible');
+            // Atualiza textos se os elementos existirem
+            if(countEl) countEl.innerText = `${cart.length} itens`;
+            if(totalEl) totalEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            // Lógica da barra flutuante (Com proteção anti-erro)
+            if (cartBar) {
+                if (cart.length > 0) {
+                    // Se o modal existe e está aberto, esconde a barra. Se não, mostra.
+                    if (modal && modal.classList.contains('open')) {
+                        cartBar.classList.remove('visible');
+                    } else {
+                        cartBar.classList.add('visible');
+                    }
+                } else {
+                    cartBar.classList.remove('visible');
                 }
-            } else {
-                cartBar.classList.remove('visible');
             }
         }
 
-        // --- FUNÇÕES CORRIGIDAS PARA O BUG DA BARRA FLUTUANTE ---
-
+        // --- FUNÇÕES DA JANELA DE PEDIDO ---
         function openModal() {
             if (cart.length === 0) return;
+            
             renderCartItems();
-            document.getElementById('checkout-modal').classList.add('open');
+            
+            const modal = document.getElementById('checkout-modal');
+            const cartBar = document.getElementById('cart-bar');
 
-            // CORREÇÃO AQUI: Esconde a barra flutuante quando o modal abre
-            document.getElementById('cart-bar').classList.remove('visible');
-
-            // (Opcional) Mostra no console se é cliente recorrente
-            const savedName = localStorage.getItem('meuCardapio_nome');
-            if(savedName) console.log("Cliente recorrente: " + savedName);
+            if (modal) modal.classList.add('open');
+            if (cartBar) cartBar.classList.remove('visible'); // Esconde a barra
         }
 
         function closeModal() {
-            document.getElementById('checkout-modal').classList.remove('open');
+            const modal = document.getElementById('checkout-modal');
+            const cartBar = document.getElementById('cart-bar');
 
-            // CORREÇÃO AQUI: Se ainda tiver itens, mostra a barra de volta
-            if (cart.length > 0) {
-                document.getElementById('cart-bar').classList.add('visible');
+            if (modal) modal.classList.remove('open');
+
+            // Se ainda tiver itens, traz a barra de volta
+            if (cart.length > 0 && cartBar) {
+                cartBar.classList.add('visible');
             }
         }
 
+        // --- ENVIAR PEDIDO ---
         function sendOrder() {
-            const name = document.getElementById('client-name').value;
-            const address = document.getElementById('client-address').value;
-            const payment = document.getElementById('payment-method').value;
+            const nameInput = document.getElementById('client-name');
+            const addressInput = document.getElementById('client-address');
+            const paymentInput = document.getElementById('payment-method');
+
+            // Proteção caso os inputs não existam
+            const name = nameInput ? nameInput.value : "Não informado";
+            const address = addressInput ? addressInput.value : "Não informado";
+            const payment = paymentInput ? paymentInput.value : "Dinheiro";
 
             if (name.trim() === "" || address.trim() === "") {
                 alert("Por favor, preencha nome e endereço!");
                 return;
             }
 
-            // --- NOVO: SALVAR DADOS NO NAVEGADOR ---
-            localStorage.setItem('meuCardapio_nome', name);
-            localStorage.setItem('meuCardapio_endereco', address);
+            // Salvar dados
+            localStorage.setItem('cardapio_nome', name);
+            localStorage.setItem('cardapio_endereco', address);
 
             let message = `*NOVO PEDIDO APP*\n\n`;
             message += `👤 *Cliente:* ${name}\n`;
@@ -110,24 +132,19 @@
             message += `\n💰 *TOTAL: ${formattedTotal}*`;
 
             const whatsappUrl = `https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`;
-
-            // 1. Abre o WhatsApp
             window.open(whatsappUrl, '_blank');
 
-            // 2. Limpa o carrinho e fecha o modal
+            // Limpa carrinho
             cart = [];
             total = 0;
             updateCartUI();
             closeModal();
-            // Nota: Mantemos o input limpo para resetar o formulário visualmente, 
-            // mas o localStorage já guardou para a próxima visita.
-            document.getElementById('client-name').value = "";
-            document.getElementById('client-address').value = "";
         }
 
-        // Função para desenhar a lista visual no modal
         function renderCartItems() {
             const container = document.getElementById('cart-items-list');
+            if (!container) return; // Se não tiver a lista no HTML, para aqui
+
             container.innerHTML = '';
 
             if (cart.length === 0) {
@@ -138,7 +155,7 @@
             cart.forEach((item, index) => {
                 const row = document.createElement('div');
                 row.classList.add('cart-item-row');
-
+                
                 const priceFormatted = item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
                 row.innerHTML = `
@@ -154,21 +171,23 @@
             });
         }
 
-        // Função para remover o item
         function removeItem(index) {
             const item = cart[index];
-
-            // Subtrai o valor e remove do array
             total -= item.price;
             cart.splice(index, 1);
-
-            // Atualiza tudo
-            updateCartUI(); 
-
+            updateCartUI();
+            
             if (cart.length === 0) {
-                closeModal(); // Se zerou, fecha o modal
+                closeModal();
             } else {
-                renderCartItems(); // Se ainda tem itens, redesenha a lista
+                renderCartItems();
             }
         }
-    </script>
+        
+        // Listener global para fechar modal ao clicar fora (com verificação)
+        const modalEl = document.getElementById('checkout-modal');
+        if (modalEl) {
+            modalEl.addEventListener('click', (e) => {
+                if (e.target === modalEl) closeModal();
+            });
+        }
