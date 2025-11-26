@@ -64,13 +64,28 @@
 
         // 5. Remover Item
         function removeItem(index) {
-            const item = cart[index];
-            total -= item.price;
-            cart.splice(index, 1);
-            updateCartUI();
-            if (cart.length === 0) closeModal();
-            else renderCartItems();
-        }
+    const item = cart[index];
+    
+    // 1. Subtrai o valor do item do total geral
+    total -= item.price;
+    
+    // Evita erros de arredondamento (ex: ficar com -0.0001)
+    if (total < 0) total = 0;
+
+    // 2. Remove o item da lista (array)
+    cart.splice(index, 1);
+    
+    // 3. Atualiza a barra do fundo (se ela estivesse visível)
+    updateCartUI();
+    
+    // 4. Lógica de Fechamento ou Atualização
+    if (cart.length === 0) {
+        closeModal(); // Se ficou vazio, fecha a janela
+    } else {
+        renderCartItems();  // Redesenha a lista visual (sem o item removido)
+        updateTotalModal(); // <--- O SEGREDO: Recalcula o total + frete no botão verde
+    }
+}
 
         // 6. Renderizar Lista no Modal
         function renderCartItems() {
