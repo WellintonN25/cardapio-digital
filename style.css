@@ -283,17 +283,26 @@
       }
 
       .modal-content {
-       background: #fff;
-       width: 100%;
-       max-width: 500px;
-       border-radius: 25px 25px 0 0; /* Arredondado só em cima no mobile */
-       padding: 30px 25px;
-       box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
-       position: relative;
-       max-height: 90vh;
-       display: flex;
-       flex-direction: column;
-      }
+    box-sizing: border-box; /* O SEGREDO: Faz o padding caber dentro da largura */
+    background: white;
+    padding: 25px;
+    
+    /* No celular, ocupa a largura total */
+    width: 100%; 
+    
+    max-width: 500px; /* No PC, não passa disso */
+    
+    /* Arredonda só em cima */
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s;
+    max-height: 90vh;
+    overflow-y: auto;
+}
 
 
       @media (min-width: 768px) {
