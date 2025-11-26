@@ -119,40 +119,67 @@
         }
 
         // 8. Enviar Pedido
-        function sendOrder() {
-            const nameEl = document.getElementById('client-name');
-            const addrEl = document.getElementById('client-address');
-            const payEl = document.getElementById('payment-method');
-            
-            const name = nameEl ? nameEl.value : "";
-            const address = addrEl ? addrEl.value : "";
-            const payment = payEl ? payEl.value : "Pix";
+        
+ function sendOrder() {
+    const nameEl = document.getElementById('client-name');
+    const addrEl = document.getElementById('client-address');
+    const payEl = document.getElementById('payment-method');
+    
+    // Pega a opção de entrega selecionada
+    const deliveryOption = document.querySelector('input[name="delivery-type"]:checked').value;
 
-            if (name.trim() === "" || address.trim() === "") {
-                alert("Por favor, preencha nome e endereço!");
-                return;
-            }
+    const name = nameEl ? nameEl.value : "";
+    const address = addrEl ? addrEl.value : "";
+    const payment = payEl ? payEl.value : "Pix";
 
-            // Salvar no LocalStorage
-            try {
-                localStorage.setItem('meuCardapio_nome', name);
-                localStorage.setItem('meuCardapio_endereco', address);
-            } catch(e) {}
+    if (name.trim() === "" || (deliveryOption === 'entrega' && address.trim() === "")) {
+        alert("Por favor, preencha seus dados!");
+        return;
+    }
 
-            let message = `*NOVO PEDIDO*\n\n👤 *Cliente:* ${name}\n📍 *Local:* ${address}\n💳 *Pagamento:* ${payment}\n\n*📝 ITENS:*\n`;
-            cart.forEach(item => { message += `• ${item.name}\n`; });
-            
-            const formattedTotal = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            message += `\n💰 *TOTAL: ${formattedTotal}*`;
+    // Salvar no LocalStorage
+    try {
+        localStorage.setItem('meuCardapio_nome', name);
+        localStorage.setItem('meuCardapio_endereco', address);
+    } catch(e) {}
 
-            window.open(`https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
-            
-            // Resetar
-            cart = [];
-            total = 0;
-            updateCartUI();
-            closeModal();
-        }
+    // Cálculos
+    let finalTotal = total;
+    let deliveryText = "";
+
+    if (deliveryOption === 'entrega') {
+        finalTotal += 5.00;
+        deliveryText = "🛵 *Entrega:* Sim (+ R$ 5,00)";
+    } else {
+        deliveryText = "🥡 *Retirada no Balcão*";
+    }
+
+    // Montando a mensagem
+    let message = `*NOVO PEDIDO*\n\n👤 *Cliente:* ${name}\n`;
+    
+    if (deliveryOption === 'entrega') {
+        message += `📍 *Endereço:* ${address}\n`;
+    } else {
+        message += `📍 *Endereço:* Retirada no Local\n`;
+    }
+    
+    message += `${deliveryText}\n`;
+    message += `💳 *Pagamento:* ${payment}\n\n*📝 ITENS:*\n`;
+    
+    cart.forEach(item => { message += `• ${item.name}\n`; });
+    
+    const formattedTotal = finalTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    message += `\n💰 *TOTAL FINAL: ${formattedTotal}*`;
+
+    window.open(`https://wa.me/${MERCHANT_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
+    
+    // Resetar
+    cart = [];
+    total = 0;
+    updateCartUI();
+    closeModal();
+}
+
 
 // Função para atualizar o total no botão quando troca a entrega
 function updateTotalModal() {
