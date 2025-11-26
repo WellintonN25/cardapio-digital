@@ -107,6 +107,9 @@
             // Esconde a barra ao abrir o modal
             const cartBar = document.getElementById('cart-bar');
             if(cartBar) cartBar.classList.remove('visible');
+
+// NOVA LINHA: Atualiza o total assim que abre a janela
+    updateTotalModal();
         }
 
         function closeModal() {
