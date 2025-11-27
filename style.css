@@ -12,19 +12,37 @@
     scroll-behavior: smooth; /* Faz a rolagem ser deslizante ao clicar nas abas */
 }
 
+html, body {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* O segredo para iOS (iPhone) */
+    overscroll-behavior-y: none; /* Evita aquele "pulo" elástico no fim da página */
+}
+
 .menu-container {
     /* Melhora performance em listas longas (navegadores modernos) */
     content-visibility: auto; 
     contain-intrinsic-size: 1px 300px; /* Tamanho estimado do card */
+    /* NOVO: Melhora performance de listas longas */
+    contain: layout paint;
 }
 
 .product-card {
-    /* ... mantenha o resto do seu estilo ... */
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
     
-    /* TRUQUE DE PERFORMANCE: */
-    will-change: transform; /* Avisa o navegador que isso vai se mexer */
-    transform: translateZ(0); /* Força a placa de vídeo a renderizar */
-    backface-visibility: hidden;
+    /* Sombra mais leve (menos processamento) */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    
+    display: flex;
+    flex-direction: column;
+    
+    /* --- O TURBO DE PERFORMANCE --- */
+    transform: translate3d(0,0,0); /* Força a placa de vídeo a trabalhar */
+    backface-visibility: hidden;   /* Evita cintilação */
+    perspective: 1000px;
+    will-change: transform;        /* Avisa o navegador que isso vai se mexer */
+    transition: transform 0.2s ease-out; /* Animação mais curta e leve */
 }
 
       * {
